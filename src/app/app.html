@@ -1,0 +1,1507 @@
+<div class="auth-loading" *ngIf="!authChecked">Memoria wird geladen…</div>
+
+<section class="auth-page" *ngIf="authChecked && !currentUser">
+  <div class="auth-visual">
+    <div class="auth-logo">M</div>
+    <span>MEMORIA</span>
+    <h1>Momente, die bleiben.</h1>
+    <p>Bewahre Fotos, Orte, Gedanken und Klänge in deiner persönlichen Kulturreise.</p>
+  </div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button [class.active]="authMode === 'login'" (click)="authMode = 'login'; authError = ''">Anmelden</button>
+      <button [class.active]="authMode === 'register'" (click)="authMode = 'register'; authError = ''">Registrieren</button>
+    </div>
+    <h2>{{ authMode === 'login' ? 'Willkommen zurück' : 'Konto erstellen' }}</h2>
+    <p>{{ authMode === 'login' ? 'Melde dich an und öffne deine Erinnerungen.' : 'Erstelle dein persönliches Memoria-Konto.' }}</p>
+    <form (ngSubmit)="submitAuth()">
+      <label *ngIf="authMode === 'register'">Name<input name="registerName" [(ngModel)]="registerForm.name" required /></label>
+      <label *ngIf="authMode === 'login'">E-Mail<input name="loginEmail" type="email" [(ngModel)]="loginForm.email" required /></label>
+      <label *ngIf="authMode === 'login'">Passwort<input name="loginPassword" type="password" [(ngModel)]="loginForm.password" required /></label>
+      <label *ngIf="authMode === 'register'">E-Mail<input name="registerEmail" type="email" [(ngModel)]="registerForm.email" required /></label>
+      <label *ngIf="authMode === 'register'">Passwort<input name="registerPassword" type="password" [(ngModel)]="registerForm.password" required /></label>
+      <label *ngIf="authMode === 'register'">Passwort bestätigen<input name="passwordConfirmation" type="password" [(ngModel)]="registerForm.passwordConfirmation" required /></label>
+      <div class="auth-error" *ngIf="authError">{{ authError }}</div>
+      <button class="auth-submit" type="submit" [disabled]="authLoading">{{ authLoading ? 'Bitte warten…' : (authMode === 'login' ? 'Anmelden' : 'Registrieren') }}</button>
+    </form>
+  </div>
+</section>
+
+<div class="application" *ngIf="currentUser">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="logo">M</div>
+
+      <div class="logo-text">
+        <h1>Memoria</h1>
+        <p>Momente, die bleiben</p>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <div class="avatar">{{ (currentUser?.name || settings.profileName).slice(0, 2).toUpperCase() }}</div>
+
+      <div class="profile-info">
+        <strong>{{ currentUser?.name || settings.profileName }}</strong>
+        <span>Meine Kulturreise</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <button
+        [class.active]="activePage === 'home'"
+        (click)="openPage('home')"
+      >
+        <span class="menu-letter">S</span>
+        Startseite
+      </button>
+
+      <button
+        [class.active]="activePage === 'memories'"
+        (click)="openPage('memories')"
+      >
+        <span class="menu-letter">E</span>
+        Meine Erinnerungen
+      </button>
+
+      <button
+        [class.active]="activePage === 'create'"
+        (click)="openPage('create')"
+      >
+        <span class="menu-letter">N</span>
+        Neue Erinnerung
+      </button>
+
+      <button
+        [class.active]="activePage === 'timeline'"
+        (click)="openPage('timeline')"
+      >
+        <span class="menu-letter">T</span>
+        Timeline
+      </button>
+
+      <button
+        [class.active]="activePage === 'map'"
+        (click)="openPage('map')"
+      >
+        <span class="menu-letter">K</span>
+        Karte
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button
+        [class.active]="activePage === 'settings'"
+        (click)="openPage('settings')"
+      >
+        <span class="menu-letter">I</span>
+        Einstellungen
+      </button>
+      <button class="logout-button" (click)="logout()">
+        <span class="menu-letter">A</span>
+        Abmelden
+      </button>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <div>
+        <span class="topbar-label">PERSÖNLICHE KULTURERINNERUNGEN</span>
+      </div>
+
+      <button class="new-memory-button" (click)="openPage('create')">
+        Neue Erinnerung
+      </button>
+    </header>
+
+    <!-- STARTSEITE -->
+
+    <section class="page" *ngIf="activePage === 'home'">
+      <div class="welcome-panel">
+        <div class="welcome-text">
+          <span class="section-label">WILLKOMMEN BEI MEMORIA</span>
+
+          <h2>Was möchtest du in Erinnerung behalten?</h2>
+
+          <p>
+            Bewahre wenige ausgewählte Fotos, persönliche Gedanken,
+            Menschen und Klänge eines besonderen kulturellen Erlebnisses.
+          </p>
+
+          <div class="welcome-actions">
+            <button class="primary-button" (click)="openPage('create')">
+              Erinnerung erstellen
+            </button>
+
+            <button class="secondary-button" (click)="openPage('memories')">
+              Erinnerungen ansehen
+            </button>
+          </div>
+        </div>
+
+        <div class="welcome-placeholder">
+          <div class="placeholder-card card-one"></div>
+          <div class="placeholder-card card-two"></div>
+
+          <div class="placeholder-card main-card">
+            <div class="placeholder-image">
+              <span>Dein besonderer Moment</span>
+            </div>
+
+            <div class="placeholder-lines">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <article class="info-card">
+          <span class="info-number">{{ memories.length }}</span>
+          <strong>Erinnerungen</strong>
+          <p>Bewusst ausgewählte kulturelle Momente</p>
+        </article>
+
+        <article class="info-card">
+          <span class="info-number">{{ totalPhotoCount }}</span>
+          <strong>Gespeicherte Bilder</strong>
+          <p>Alle Fotos aus deinen Erinnerungen</p>
+        </article>
+
+        <article class="info-card">
+          <span class="info-number">{{ totalSoundtrackCount }}</span>
+          <strong>Soundtracks</strong>
+          <p>Gespeicherte Aufnahmen und Soundscapes</p>
+        </article>
+      </div>
+
+      <div class="soft-reminder">
+        <div>
+          <span class="section-label">SANFTE ERINNERUNG</span>
+          <h3>Deine Erinnerungen erscheinen nur dann, wenn du es möchtest.</h3>
+          <p>
+            Du entscheidest selbst, ob du nach einem Monat, einem Jahr oder
+            überhaupt nicht erinnert werden möchtest.
+          </p>
+        </div>
+
+        <button (click)="openPage('settings')">Einstellungen öffnen</button>
+      </div>
+
+      <div class="empty-home" *ngIf="memories.length === 0">
+        <div class="empty-symbol">M</div>
+
+        <h3>Noch keine Erinnerungen gespeichert</h3>
+
+        <p>
+          Erstelle deine erste kulturelle Erinnerung. Du musst nicht alles
+          dokumentieren – nur das, was für dich wirklich wichtig ist.
+        </p>
+
+        <button class="primary-button" (click)="openPage('create')">
+          Erste Erinnerung erstellen
+        </button>
+      </div>
+    </section>
+
+    <!-- ERINNERUNGEN -->
+
+    <section class="page" *ngIf="activePage === 'memories'">
+      <div class="page-heading">
+        <div>
+          <span class="section-label">DEINE SAMMLUNG</span>
+          <h2>Meine Erinnerungen</h2>
+          <p>
+            Hier findest du deine bewusst ausgewählten kulturellen Momente.
+          </p>
+        </div>
+
+        <button class="primary-button" (click)="openPage('create')">
+          Neue Erinnerung
+        </button>
+      </div>
+
+      <div class="search-panel">
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          placeholder="Nach Titel, Ort, Person oder Inhalt suchen"
+        />
+
+        <select [(ngModel)]="selectedCategory">
+          <option
+            *ngFor="let category of categories"
+            [value]="category"
+          >
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <div class="memory-list" *ngIf="filteredMemories.length > 0">
+        <article class="memory-item" *ngFor="let memory of filteredMemories">
+          <div class="memory-photo-area">
+            <img
+              *ngIf="memory.photos.length > 0"
+              [src]="memory.photos[0]"
+              [alt]="memory.title"
+            />
+
+            <div
+              class="no-photo"
+              *ngIf="memory.photos.length === 0"
+            >
+              <span>{{ memory.category }}</span>
+            </div>
+          </div>
+
+          <div class="memory-content">
+            <div class="memory-meta">
+              <span>{{ memory.category }}</span>
+              <span>{{ memory.date }}</span>
+            </div>
+
+            <h3>{{ memory.title }}</h3>
+
+            <p class="memory-place">{{ memory.location }}</p>
+
+            <p class="memory-description">
+              {{ memory.description }}
+            </p>
+
+            <div class="memory-details">
+              <span>Emotion: {{ memory.emotion }}</span>
+
+              <span *ngIf="memory.people">
+                Mit: {{ memory.people }}
+              </span>
+
+              <span>
+                {{ memory.photos.length }} von 5 Fotos
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="delete-button"
+            (click)="deleteMemory(memory.id)"
+          >
+            Löschen
+          </button>
+        </article>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredMemories.length === 0">
+        <div class="empty-symbol">M</div>
+
+        <h3>Keine Erinnerungen gefunden</h3>
+
+        <p *ngIf="memories.length === 0">
+          Du hast bisher noch keine Erinnerung gespeichert.
+        </p>
+
+        <p *ngIf="memories.length > 0">
+          Ändere den Suchbegriff oder den ausgewählten Filter.
+        </p>
+
+        <button class="primary-button" (click)="openPage('create')">
+          Erinnerung erstellen
+        </button>
+      </div>
+    </section>
+
+    <!-- NEUE ERINNERUNG -->
+
+    <section class="page" *ngIf="activePage === 'create'">
+      <div class="page-heading">
+        <div>
+          <span class="section-label">NEUER KULTURELLER MOMENT</span>
+          <h2>Neue Erinnerung erstellen</h2>
+          <p>
+            Bewahre nur die Elemente, die dir später helfen, in diesen
+            Moment zurückzukehren.
+          </p>
+        </div>
+      </div>
+
+      <div class="create-grid">
+        <div class="form-area">
+          <div class="form-section">
+            <div class="form-title">
+              <span>1</span>
+
+              <div>
+                <h3>Grundinformationen</h3>
+                <p>Was hast du erlebt und wo war es?</p>
+              </div>
+            </div>
+
+            <div class="input-grid">
+              <label class="wide-field">
+                <span>Titel der Erinnerung *</span>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newMemory.title"
+                  placeholder="Zum Beispiel: Theaterabend in Hamburg"
+                />
+              </label>
+
+              <label>
+                <span>Datum *</span>
+                <input type="date" [(ngModel)]="newMemory.date" />
+              </label>
+
+              <label>
+                <span>Ort *</span>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newMemory.location"
+                  placeholder="Stadt oder Veranstaltungsort"
+                />
+              </label>
+
+              <label>
+                <span>Art des Erlebnisses</span>
+
+                <select [(ngModel)]="newMemory.category">
+                  <option
+                    *ngFor="let category of creationCategories"
+                    [value]="category"
+                  >
+                    {{ category }}
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                <span>Mit wem warst du dort?</span>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newMemory.people"
+                  placeholder="Namen oder kurze Beschreibung"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-title">
+              <span>2</span>
+
+              <div>
+                <h3>Fotos und Videos</h3>
+                <p>
+                  Maximal fünf Fotos und zwei Videos. Weniger Material macht
+                  die Erinnerung übersichtlicher.
+                </p>
+              </div>
+            </div>
+
+            <div class="upload-grid">
+              <input
+                #photoInput
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                (change)="onPhotosSelected($event)"
+              />
+
+              <button
+                class="upload-box"
+                type="button"
+                [disabled]="photoPreviews.length >= 5"
+                (click)="photoInput.click()"
+              >
+                <strong>Fotos auswählen</strong>
+                <span>{{ photoPreviews.length }} von 5 ausgewählt</span>
+              </button>
+
+              <input
+                #videoInput
+                type="file"
+                accept="video/*"
+                multiple
+                hidden
+                (change)="onVideosSelected($event)"
+              />
+
+              <button
+                class="upload-box"
+                type="button"
+                [disabled]="videoNames.length >= 2"
+                (click)="videoInput.click()"
+              >
+                <strong>Videos auswählen</strong>
+                <span>{{ videoNames.length }} von 2 ausgewählt</span>
+              </button>
+            </div>
+
+            <div class="photo-grid" *ngIf="photoPreviews.length > 0">
+              <div
+                class="selected-photo"
+                *ngFor="let photo of photoPreviews; let i = index"
+              >
+                <img [src]="photo" alt="Ausgewähltes Foto" />
+
+                <button type="button" (click)="removePhoto(i)">
+                  Entfernen
+                </button>
+              </div>
+            </div>
+
+            <div class="video-list" *ngIf="videoNames.length > 0">
+              <div *ngFor="let video of videoNames; let i = index">
+                <span>{{ video }}</span>
+
+                <button type="button" (click)="removeVideo(i)">
+                  Entfernen
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-section audio-form-section">
+  <div class="form-title">
+    <span>3</span>
+
+    <div>
+      <h3>Atmosphäre und Soundscape</h3>
+
+      <p>
+        Nimm Stimmen, Musik oder Umgebungsgeräusche auf.
+        Memoria kann daraus einen bis zu zwei Minuten
+        langen atmosphärischen Zusammenschnitt erstellen.
+      </p>
+    </div>
+  </div>
+
+  <div class="sound-studio">
+    <div class="sound-visualizer">
+      <span
+        *ngFor="
+          let item of [
+            1, 2, 3, 4, 5, 6, 7, 8,
+            9, 10, 11, 12, 13, 14
+          ]
+        "
+        [class.active]="isRecording"
+      ></span>
+    </div>
+
+    <div class="sound-status">
+      <span>
+        {{
+          isRecording
+            ? 'Aufnahme läuft'
+            : recordedAudioUrl
+              ? 'Aufnahme abgeschlossen'
+              : 'Bereit für die Aufnahme'
+        }}
+      </span>
+
+      <strong>
+        {{ formatDuration(recordingSeconds) }}
+      </strong>
+    </div>
+
+    <div class="sound-actions">
+      <button
+        type="button"
+        class="record-audio-button"
+        *ngIf="!isRecording && !recordedAudioUrl"
+        (click)="startRecording()"
+      >
+        Aufnahme starten
+      </button>
+
+      <button
+        type="button"
+        class="stop-audio-button"
+        *ngIf="isRecording"
+        (click)="stopRecording()"
+      >
+        Aufnahme beenden
+      </button>
+
+      <button
+        type="button"
+        class="delete-audio-button"
+        *ngIf="recordedAudioUrl && !isRecording"
+        (click)="deleteRecording()"
+      >
+        Neu aufnehmen
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="audio-preview-panel"
+    *ngIf="recordedAudioUrl"
+  >
+    <div>
+      <span>ORIGINALAUFNAHME</span>
+      <audio
+        [src]="recordedAudioUrl"
+        controls
+      ></audio>
+    </div>
+
+    <button
+      type="button"
+      class="soundscape-button"
+      [disabled]="isCreatingSoundscape"
+      (click)="createTwoMinuteSoundscape()"
+    >
+      {{
+        isCreatingSoundscape
+          ? 'Soundscape wird erstellt...'
+          : '2-Minuten-Soundscape erstellen'
+      }}
+    </button>
+  </div>
+
+  <div
+    class="generated-soundscape"
+    *ngIf="soundscapeUrl"
+  >
+    <span>DEIN MEMORY SOUNDSCAPE</span>
+
+    <h4>Zwei Minuten zurück im Moment</h4>
+
+    <audio
+      [src]="soundscapeUrl"
+      controls
+    ></audio>
+  </div>
+</div>
+          <div class="form-section">
+            <div class="form-title">
+              <span>3</span>
+
+              <div>
+                <h3>Persönliche Erinnerung</h3>
+                <p>
+                  Beschreibe nicht den gesamten Ablauf, sondern den Moment,
+                  den du nicht vergessen möchtest.
+                </p>
+              </div>
+            </div>
+
+            <label class="wide-field">
+              <span>Was soll nicht verloren gehen? *</span>
+
+              <textarea
+                [(ngModel)]="newMemory.description"
+                maxlength="600"
+                placeholder="Was war besonders? Wie hast du dich gefühlt? Was möchtest du später noch wissen?"
+              ></textarea>
+
+              <small>
+                {{ newMemory.description.length }} von 600 Zeichen
+              </small>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <div class="form-title">
+              <span>4</span>
+
+              <div>
+                <h3>Emotion</h3>
+                <p>Welche Emotion steht im Mittelpunkt?</p>
+              </div>
+            </div>
+
+            <div class="emotion-list">
+              <button
+                type="button"
+                *ngFor="let emotion of emotions"
+                [class.selected]="newMemory.emotion === emotion"
+                (click)="newMemory.emotion = emotion"
+              >
+                {{ emotion }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-title">
+              <span>5</span>
+
+              <div>
+                <h3>Erinnerung einstellen</h3>
+                <p>
+                  Entscheide selbst, ob und wann das Erlebnis wieder
+                  erscheinen soll.
+                </p>
+              </div>
+            </div>
+
+            <div class="reminder-list">
+              <label
+                *ngFor="let reminder of reminders"
+                [class.selected]="newMemory.reminder === reminder"
+              >
+                <input
+                  type="radio"
+                  name="reminder"
+                  [value]="reminder"
+                  [(ngModel)]="newMemory.reminder"
+                />
+
+                {{ reminder }}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button class="secondary-button" (click)="openPage('home')">
+              Abbrechen
+            </button>
+
+            <button class="primary-button" (click)="saveMemory()">
+              Erinnerung speichern
+            </button>
+          </div>
+        </div>
+
+        <aside class="preview-area">
+          <span class="section-label">VORSCHAU</span>
+
+          <div class="preview-card">
+            <div class="preview-photo">
+              <img
+                *ngIf="photoPreviews.length > 0"
+                [src]="photoPreviews[0]"
+                alt="Vorschau"
+              />
+
+              <div *ngIf="photoPreviews.length === 0">
+                Titelbild
+              </div>
+            </div>
+
+            <div class="preview-content">
+              <span>{{ newMemory.category }}</span>
+
+              <h3>
+                {{ newMemory.title || 'Titel deiner Erinnerung' }}
+              </h3>
+
+              <p class="preview-location">
+                {{ newMemory.location || 'Ort des Erlebnisses' }}
+              </p>
+
+              <p class="preview-description">
+                {{
+                  newMemory.description ||
+                    'Deine persönliche Erinnerung erscheint hier.'
+                }}
+              </p>
+
+              <div class="preview-bottom">
+                <strong>{{ newMemory.emotion }}</strong>
+                <span>{{ newMemory.date || 'Datum' }}</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+
+<section
+  class="timeline-experience"
+  *ngIf="activePage === 'timeline'"
+>
+  <header class="timeline-header">
+    <div>
+      <span class="timeline-eyebrow">
+        DEINE KULTURELLE REISE
+      </span>
+
+      <h2>Momente im Wandel der Zeit</h2>
+
+      <p>
+        Entdecke deine Erinnerungen chronologisch als
+        persönliche Geschichte.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="beautiful-primary-button"
+      (click)="openPage('create')"
+    >
+      <span class="button-plus">+</span>
+      Neue Erinnerung
+    </button>
+  </header>
+
+  <div
+    class="year-filter"
+    *ngIf="memories.length > 0"
+  >
+    <button
+      type="button"
+      [class.active]="selectedTimelineYear === 'Alle'"
+      (click)="selectedTimelineYear = 'Alle'"
+    >
+      Alle Jahre
+    </button>
+
+    <button
+      type="button"
+      *ngFor="let year of timelineYears"
+      [class.active]="
+        selectedTimelineYear === year.toString()
+      "
+      (click)="selectedTimelineYear = year.toString()"
+    >
+      {{ year }}
+    </button>
+  </div>
+
+  <div
+    class="timeline-empty-state"
+    *ngIf="memories.length === 0"
+  >
+    <div class="timeline-empty-logo">M</div>
+
+    <h3>Deine Timeline ist noch leer</h3>
+
+    <p>
+      Erstelle deine erste Erinnerung, um deine
+      Kulturgeschichte zu beginnen.
+    </p>
+  </div>
+
+  <div
+    class="timeline-gallery"
+    *ngIf="timelineMemories.length > 0"
+  >
+    <article
+      class="timeline-gallery-card"
+      *ngFor="let memory of timelineMemories"
+    >
+      <div class="timeline-gallery-image">
+        <img
+          *ngIf="memory.photos.length > 0"
+          [src]="memory.photos[0]"
+          [alt]="memory.title"
+        />
+
+        <div
+          class="timeline-image-placeholder"
+          *ngIf="memory.photos.length === 0"
+        >
+          <strong>
+            {{ memory.category.charAt(0) }}
+          </strong>
+
+          <span>{{ memory.category }}</span>
+        </div>
+
+        <div class="timeline-date-badge">
+          <strong>
+            {{ getTimelineDay(memory) }}
+          </strong>
+
+          <span>
+            {{ getTimelineMonth(memory) }}
+          </span>
+
+          <small>
+            {{ getTimelineYear(memory) }}
+          </small>
+        </div>
+      </div>
+
+      <div class="timeline-gallery-content">
+        <div class="timeline-card-meta">
+          <span>{{ memory.category }}</span>
+          <span>{{ memory.location }}</span>
+        </div>
+
+        <h3>{{ memory.title }}</h3>
+
+        <p>
+          {{ memory.description }}
+        </p>
+
+        <div class="timeline-card-bottom">
+          <div class="timeline-card-tags">
+            <span>{{ memory.emotion }}</span>
+
+            <span *ngIf="memory.people">
+              Mit {{ memory.people }}
+            </span>
+          </div>
+
+          <button
+           type="button"
+           class="beautiful-secondary-button"
+           (click)="openTimelineMemory(memory)"
+          >
+           Erinnerung öffnen
+           </button>
+        </div>
+
+        <audio
+          *ngIf="memory.soundscapeUrl"
+          [src]="memory.soundscapeUrl"
+          controls
+        ></audio>
+      </div>
+    </article>
+  </div>
+  
+
+</section>
+
+    <!-- KARTE -->
+
+<section
+  class="map-experience"
+  *ngIf="activePage === 'map'"
+>
+  <header class="map-header">
+    <div>
+      <span class="map-eyebrow">
+        DEINE KULTURELLE WELT
+      </span>
+
+      <h2>Karte deiner Erinnerungen</h2>
+
+      <p>
+        Alle besuchten Orte erscheinen gemeinsam auf einer
+        interaktiven Karte.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="beautiful-primary-button"
+      (click)="openPage('create')"
+    >
+      <span class="button-plus">+</span>
+      Ort hinzufügen
+    </button>
+  </header>
+
+  <div class="map-card">
+    <div
+      #memoryMap
+      class="memory-map"
+    ></div>
+
+    <div class="map-glass-panel">
+      <span>MEMORIA MAP</span>
+
+      <strong>
+        {{ memories.length }}
+        {{
+          memories.length === 1
+            ? 'gespeicherter Ort'
+            : 'gespeicherte Orte'
+        }}
+      </strong>
+    </div>
+
+    <div
+      class="map-empty-overlay"
+      *ngIf="memories.length === 0"
+    >
+      <div class="empty-map-logo">M</div>
+
+      <h3>Noch keine Orte gespeichert</h3>
+
+      <p>
+        Erstelle eine Erinnerung und gib einen Ort ein.
+      </p>
+
+      <button
+        type="button"
+        class="beautiful-primary-button"
+        (click)="openPage('create')"
+      >
+        Erste Erinnerung erstellen
+      </button>
+    </div>
+  </div>
+</section>
+
+    <!-- EINSTELLUNGEN -->
+
+<section
+  class="settings-page"
+  *ngIf="activePage === 'settings'"
+>
+  <div class="settings-hero">
+    <div class="settings-hero-content">
+      <span class="settings-kicker">
+        DEIN PERSÖNLICHES MEMORIA
+      </span>
+
+      <h2>Einstellungen</h2>
+
+      <p>
+        Passe Erinnerungen, Soundscape, Darstellung und lokale
+        Speicherung an deine Wünsche an.
+      </p>
+    </div>
+
+    <div class="settings-hero-profile">
+      <div class="settings-hero-avatar">
+        {{
+          settings.profileName
+            .slice(0, 2)
+            .toUpperCase()
+        }}
+      </div>
+
+      <div>
+        <strong>{{ settings.profileName }}</strong>
+        <span>Lokales Profil</span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="settings-success"
+    *ngIf="settingsSaved"
+  >
+    <div class="settings-success-icon">✓</div>
+
+    <div>
+      <strong>Einstellungen gespeichert</strong>
+
+      <span>
+        Deine Änderungen wurden lokal übernommen.
+      </span>
+    </div>
+  </div>
+
+  <div class="settings-dashboard">
+    <aside class="settings-side-panel">
+      <div class="storage-status-card">
+        <div class="storage-status-top">
+          <div class="storage-status-icon">M</div>
+
+          <div>
+            <span>LOKALE SPEICHERUNG</span>
+            <strong>Browser-Speicher aktiv</strong>
+          </div>
+        </div>
+
+        <p>
+          Einstellungen bleiben nach dem Schließen des Browsers
+          erhalten.
+        </p>
+
+        <div class="storage-indicator">
+          <span></span>
+          localStorage verbunden
+        </div>
+      </div>
+
+      <div class="settings-summary-card">
+        <span class="settings-card-label">
+          AKTUELLE KONFIGURATION
+        </span>
+
+        <div class="settings-summary-row">
+          <span>Erinnerungen</span>
+
+          <strong>
+            {{
+              settings.remindersEnabled
+                ? 'Aktiv'
+                : 'Deaktiviert'
+            }}
+          </strong>
+        </div>
+
+        <div class="settings-summary-row">
+          <span>Soundscape</span>
+
+          <strong>
+            {{
+              settings.autoplaySoundscape
+                ? 'Automatisch'
+                : 'Manuell'
+            }}
+          </strong>
+        </div>
+
+        <div class="settings-summary-row">
+          <span>Timeline</span>
+
+          <strong>
+            {{
+              settings.compactTimeline
+                ? 'Kompakt'
+                : 'Groß'
+            }}
+          </strong>
+        </div>
+
+        <div class="settings-summary-row">
+          <span>Sprache</span>
+          <strong>{{ settings.language }}</strong>
+        </div>
+      </div>
+    </aside>
+
+    <div class="settings-main-column">
+      <section class="settings-card">
+        <div class="settings-card-heading">
+          <div class="settings-card-number">01</div>
+
+          <div>
+            <span class="settings-card-label">
+              PROFIL
+            </span>
+
+            <h3>Persönliche Angaben</h3>
+
+            <p>
+              Passe deinen Anzeigenamen und die Sprache an.
+            </p>
+          </div>
+        </div>
+
+        <div class="settings-fields-grid">
+          <label class="settings-input-field">
+            <span>Anzeigename</span>
+
+            <input
+              type="text"
+              [(ngModel)]="settings.profileName"
+              maxlength="40"
+            />
+
+            <small>
+              Dieser Name wird in deinem lokalen Profil angezeigt.
+            </small>
+          </label>
+
+          <label class="settings-input-field">
+            <span>Sprache</span>
+
+            <select [(ngModel)]="settings.language">
+              <option value="Deutsch">
+                Deutsch
+              </option>
+
+              <option value="Englisch">
+                Englisch
+              </option>
+            </select>
+
+            <small>
+              Die Sprachumschaltung wird später vollständig umgesetzt.
+            </small>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-heading">
+          <div class="settings-card-number">02</div>
+
+          <div>
+            <span class="settings-card-label">
+              ERINNERUNGEN
+            </span>
+
+            <h3>Sanfte Erinnerungen</h3>
+
+            <p>
+              Memoria soll dich erinnern, ohne dich zu stören.
+            </p>
+          </div>
+        </div>
+
+        <label class="settings-toggle-card">
+          <div class="settings-toggle-text">
+            <strong>Erinnerungen aktivieren</strong>
+
+            <span>
+              Besondere Momente dürfen gelegentlich wieder erscheinen.
+            </span>
+          </div>
+
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.remindersEnabled"
+          />
+
+          <span class="custom-toggle">
+            <span></span>
+          </span>
+        </label>
+
+        <div
+          class="settings-subsection"
+          [class.is-disabled]="!settings.remindersEnabled"
+        >
+          <label class="settings-input-field">
+            <span>Standardzeitpunkt</span>
+
+            <select
+              [(ngModel)]="settings.defaultReminder"
+              [disabled]="!settings.remindersEnabled"
+            >
+              <option
+                *ngFor="let reminder of reminders"
+                [value]="reminder"
+              >
+                {{ reminder }}
+              </option>
+            </select>
+
+            <small>
+              Dieser Zeitpunkt wird beim Erstellen neuer Erinnerungen
+              vorausgewählt.
+            </small>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-heading">
+          <div class="settings-card-number">03</div>
+
+          <div>
+            <span class="settings-card-label">
+              AUDIO
+            </span>
+
+            <h3>Soundscape</h3>
+
+            <p>
+              Bestimme, wie persönliche Klänge wiedergegeben werden.
+            </p>
+          </div>
+        </div>
+
+        <label class="settings-toggle-card">
+          <div class="settings-toggle-text">
+            <strong>
+              Soundscape automatisch starten
+            </strong>
+
+            <span>
+              Beim Öffnen einer Erinnerung startet die Aufnahme
+              automatisch.
+            </span>
+          </div>
+
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.autoplaySoundscape"
+          />
+
+          <span class="custom-toggle">
+            <span></span>
+          </span>
+        </label>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-heading">
+          <div class="settings-card-number">04</div>
+
+          <div>
+            <span class="settings-card-label">
+              DARSTELLUNG
+            </span>
+
+            <h3>Timeline</h3>
+
+            <p>
+              Passe die Größe der Timeline-Karten an.
+            </p>
+          </div>
+        </div>
+
+        <label class="settings-toggle-card">
+          <div class="settings-toggle-text">
+            <strong>Kompakte Darstellung</strong>
+
+            <span>
+              Zeigt kleinere Karten, wenn viele Erinnerungen vorhanden
+              sind.
+            </span>
+          </div>
+
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.compactTimeline"
+          />
+
+          <span class="custom-toggle">
+            <span></span>
+          </span>
+        </label>
+      </section>
+
+      <section class="settings-card privacy-settings-card">
+        <div class="settings-card-heading">
+          <div class="settings-card-number">05</div>
+
+          <div>
+            <span class="settings-card-label">
+              DATENSCHUTZ
+            </span>
+
+            <h3>Speicherung und Benutzerkonto</h3>
+
+            <p>
+              Dein Konto, deine Einstellungen und deine Erinnerungen werden jetzt über das Memoria-Backend gespeichert.
+            </p>
+          </div>
+        </div>
+
+        <div class="storage-type-grid">
+          <article class="storage-type-card">
+            <div class="storage-type-icon">T</div>
+
+            <div>
+              <span>TEXT UND EINSTELLUNGEN</span>
+              <strong>Backend</strong>
+
+              <p>
+                Einstellungen werden deinem Benutzerkonto zugeordnet und serverseitig gespeichert.
+              </p>
+            </div>
+          </article>
+
+          <article class="storage-type-card">
+            <div class="storage-type-icon">F</div>
+
+            <div>
+              <span>FOTOS UND AUDIO</span>
+              <strong>Server-Speicher</strong>
+
+              <p>
+                Fotos, Videos und Audio bleiben nach dem erneuten Anmelden verfügbar.
+              </p>
+            </div>
+          </article>
+
+          <article class="storage-type-card account-storage-card" *ngIf="currentUser as user">
+            <div class="storage-type-icon">A</div>
+
+            <div class="account-storage-content">
+              <span>MEIN KONTO</span>
+              <strong>{{ user.name }}</strong>
+
+              <p class="account-email">{{ user.email }}</p>
+
+              <div class="account-status">
+                <span class="account-status-dot"></span>
+                Angemeldet
+              </div>
+
+              <button
+                type="button"
+                class="account-logout-button"
+                (click)="logout()"
+              >
+                Abmelden
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="settings-actions">
+        <button
+          type="button"
+          class="settings-back-button"
+          (click)="openPage('home')"
+        >
+          <span>←</span>
+          Zurück
+        </button>
+
+        <button
+          type="button"
+          class="settings-reset-button"
+          (click)="resetSettings()"
+        >
+          Zurücksetzen
+        </button>
+
+        <button
+          type="button"
+          class="settings-save-button"
+          (click)="saveSettings()"
+        >
+          <span>✓</span>
+          Einstellungen speichern
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILANSICHT EINER ERINNERUNG -->
+
+<div
+  class="memory-modal-overlay"
+  *ngIf="selectedTimelineMemory"
+  (click)="closeTimelineMemory()"
+>
+  <article
+    class="memory-modal"
+    (click)="$event.stopPropagation()"
+  >
+    <button
+      type="button"
+      class="memory-modal-close"
+      (click)="closeTimelineMemory()"
+      aria-label="Erinnerung schließen"
+    >
+      ×
+    </button>
+
+    <div class="memory-modal-cover">
+      <img
+        *ngIf="selectedTimelineMemory.photos.length > 0"
+        [src]="selectedTimelineMemory.photos[0]"
+        [alt]="selectedTimelineMemory.title"
+      />
+
+      <div
+        class="memory-modal-placeholder"
+        *ngIf="selectedTimelineMemory.photos.length === 0"
+      >
+        <strong>
+          {{ selectedTimelineMemory.category.charAt(0) }}
+        </strong>
+
+        <span>
+          {{ selectedTimelineMemory.category }}
+        </span>
+      </div>
+
+      <div class="memory-modal-cover-overlay"></div>
+
+      <div class="memory-modal-title">
+        <span class="memory-modal-category">
+          {{ selectedTimelineMemory.category }}
+        </span>
+
+        <h2>
+          {{ selectedTimelineMemory.title }}
+        </h2>
+
+        <div class="memory-modal-meta">
+          <span>
+            {{ getFormattedDate(selectedTimelineMemory.date) }}
+          </span>
+
+          <span>
+            {{ selectedTimelineMemory.location }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memory-modal-content">
+      <section class="memory-modal-story">
+        <span class="memory-modal-label">
+          PERSÖNLICHER MOMENT
+        </span>
+
+        <blockquote>
+          {{ selectedTimelineMemory.description }}
+        </blockquote>
+
+        <div class="memory-modal-tags">
+          <span>
+            {{ selectedTimelineMemory.emotion }}
+          </span>
+
+          <span *ngIf="selectedTimelineMemory.people">
+            Mit {{ selectedTimelineMemory.people }}
+          </span>
+
+          <span>
+            {{ selectedTimelineMemory.reminder }}
+          </span>
+        </div>
+      </section>
+
+      <section
+        class="memory-modal-audio"
+        *ngIf="
+          selectedTimelineMemory.soundscapeUrl ||
+          selectedTimelineMemory.audioUrl
+        "
+      >
+        <div class="memory-modal-audio-heading">
+          <div class="memory-audio-logo">M</div>
+
+          <div>
+            <span>MEMORY SOUNDSCAPE</span>
+            <h3>Zurück in diesen Moment</h3>
+          </div>
+        </div>
+
+        <audio
+          [src]="
+            selectedTimelineMemory.soundscapeUrl ||
+            selectedTimelineMemory.audioUrl
+          "
+          [autoplay]="settings.autoplaySoundscape"
+          controls
+        ></audio>
+      </section>
+
+      <section
+        class="memory-modal-gallery"
+        *ngIf="selectedTimelineMemory.photos.length > 1"
+      >
+        <div class="memory-modal-gallery-header">
+          <span class="memory-modal-label">
+            AUSGEWÄHLTE FOTOS
+          </span>
+
+          <small>
+            {{ selectedTimelineMemory.photos.length }}
+            von maximal 5
+          </small>
+        </div>
+
+        <div class="memory-modal-photo-grid">
+          <img
+            *ngFor="
+              let photo of selectedTimelineMemory.photos;
+              let i = index
+            "
+            [src]="photo"
+            [alt]="
+              selectedTimelineMemory.title +
+              ' – Foto ' +
+              (i + 1)
+            "
+          />
+        </div>
+      </section>
+    </div>
+  </article>
+</div>
+
+</main>
+</div>
