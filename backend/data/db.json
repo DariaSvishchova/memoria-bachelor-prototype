@@ -1,0 +1,145 @@
+{
+  "users": [
+    {
+      "id": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "name": "Daria",
+      "email": "datas0005@gmail.com",
+      "passwordHash": "$2b$12$7TmnY.J1ZyYhe2HeZ3TWwO7eS3A4FyQkppT7O1rwVYZEE3xDCpFcG",
+      "createdAt": "2026-08-08T08:38:48.607Z"
+    },
+    {
+      "id": "15a29008-df69-47b5-b812-54b290d2e18b",
+      "name": "Anastasiia",
+      "email": "admin@game.com",
+      "passwordHash": "$2b$12$LUuvGmdraYD0PLPkVv4wCuZwwX8WBsuGTyZqRT9O2UxI2Ff3b/veu",
+      "createdAt": "2026-08-08T08:46:12.256Z"
+    }
+  ],
+  "memories": [
+    {
+      "id": "7111352c-ccf1-46be-8580-db6603950780",
+      "userId": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "title": "Theaterabend",
+      "date": "2022-07-21",
+      "location": "Hamburg",
+      "category": "Theater",
+      "emotion": "Freiheit",
+      "people": "Schwester",
+      "description": "fkjkjfjfej iucnfn iufueiue ncnnf vifbru  oeurue.",
+      "reminder": "In einem Monat",
+      "coordinates": {
+        "latitude": 53.5501721,
+        "longitude": 10.0013165
+      },
+      "photos": [
+        "photos\\1786178528448-bfda45f6-ba61-4638-a837-dbd6fa6ae790.jpg",
+        "photos\\1786178528463-c83a736e-6212-418f-8ada-848eba7fdef4.jpg"
+      ],
+      "videos": [],
+      "videoNames": [],
+      "originalAudio": "audio\\1786178528473-6ea8edf2-f693-4447-bb17-1a74d699391a.webm",
+      "createdAt": "2026-08-08T08:42:08.486Z",
+      "updatedAt": "2026-08-08T08:42:08.486Z"
+    },
+    {
+      "id": "a71ad06f-7265-4dd6-add1-8ef98e3e9d34",
+      "userId": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "title": "Konzert in Köln",
+      "date": "2026-08-08",
+      "location": "Köln",
+      "category": "Konzert",
+      "emotion": "Freiheit",
+      "people": "Anastasiia und Anna",
+      "description": "Die besondere Atmosphäre während des Konzerts, die Musik und das Gefühl, gemeinsam mit Freunden dort gewesen zu sein. Besonders der Moment beim letzten Lied soll nicht verloren gehen, weil die ganze Halle mitgesungen hat und wir diesen Moment gemeinsam erlebt haben.",
+      "reminder": "In einem Monat",
+      "coordinates": {
+        "latitude": 50.938361,
+        "longitude": 6.959974
+      },
+      "photos": [
+        "photos\\1786368773471-2933d828-3e81-4507-9abb-121f843cb4d1.jpeg",
+        "photos\\1786368773502-7f407ab1-0dc7-45cf-83e4-1895f3a8e42c.jpg",
+        "photos\\1786368773520-2a52e0c6-27da-440e-9985-b29c421f17bc.jpeg",
+        "photos\\1786368773529-38531beb-2ef1-4390-b939-2d21a83cf0f2.jpeg"
+      ],
+      "videos": [],
+      "videoNames": [],
+      "originalAudio": "audio\\1786368773541-4586fe2c-882f-4455-a37a-cce2e015c0b1.webm",
+      "soundscape": "audio\\1786368773597-0e58c700-6cf3-43cd-8bde-1718efaca285.wav",
+      "createdAt": "2026-08-10T13:32:53.694Z",
+      "updatedAt": "2026-08-10T13:32:53.694Z"
+    },
+    {
+      "id": "15808d55-8f61-4558-9f76-cad9913035a0",
+      "userId": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "title": "Besuch im Kunsthistorischen Museum Wien",
+      "date": "2024-05-20",
+      "location": "Wien",
+      "category": "Museum",
+      "emotion": "Begeisterung",
+      "people": "Anna und Eugen",
+      "description": "Der Besuch im Kunsthistorischen Museum war besonders beeindruckend. Am meisten ist mir die ruhige Atmosphäre in den großen Sälen in Erinnerung geblieben. Wir haben uns viel Zeit genommen, die Gemälde anzusehen, und danach noch lange über unsere Lieblingswerke gesprochen.",
+      "reminder": "Am Jahrestag",
+      "coordinates": {
+        "latitude": 48.2083537,
+        "longitude": 16.3725042
+      },
+      "photos": [
+        "photos\\1786370088200-4d26aee0-e8fb-4c77-8efa-448e820e781e.jpg",
+        "photos\\1786370088211-343cd0d3-da23-45f8-8742-596a2cb58592.webp",
+        "photos\\1786370088237-2c2a7ecc-628a-47f9-9f4b-3388c022de81.jpg",
+        "photos\\1786370088241-f23bc7a3-6c8f-4d13-8560-658efe825e4c.jpg"
+      ],
+      "videos": [],
+      "videoNames": [],
+      "createdAt": "2026-08-10T13:54:48.248Z",
+      "updatedAt": "2026-08-10T13:54:48.249Z"
+    },
+    {
+      "id": "3b58e8ab-5ead-4420-b85a-b70f8f56312a",
+      "userId": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "title": "Besuch im Museum",
+      "date": "2023-07-08",
+      "location": "Berlin",
+      "category": "Museum",
+      "emotion": "Nostalgie",
+      "people": "Anna",
+      "description": "Ein interessanter Nachmittag im Museum",
+      "reminder": "Am Jahrestag",
+      "coordinates": {
+        "latitude": 52.5173885,
+        "longitude": 13.3951309
+      },
+      "photos": [
+        "photos\\1787065609308-0548a26d-b8d1-470a-88fd-1c4f403a25b9.jpg",
+        "photos\\1787065609312-dd34a58a-7b56-48a8-96fc-df1dadd8bf88.jpg"
+      ],
+      "videos": [],
+      "videoNames": [],
+      "originalAudio": "audio\\1787065609314-cd7b2628-532c-4194-b79d-2bd2d8c52ab6.webm",
+      "soundscape": "audio\\1787065609325-bc070352-4cfd-46d5-aa5f-2e866716fd40.wav",
+      "createdAt": "2026-08-18T15:06:49.410Z",
+      "updatedAt": "2026-08-18T15:06:49.410Z"
+    }
+  ],
+  "settings": [
+    {
+      "userId": "44cbca04-5fce-4194-884f-a67a811cca4b",
+      "profileName": "Daria",
+      "remindersEnabled": false,
+      "defaultReminder": "In sechs Monaten",
+      "autoplaySoundscape": true,
+      "compactTimeline": true,
+      "language": "Deutsch"
+    },
+    {
+      "userId": "15a29008-df69-47b5-b812-54b290d2e18b",
+      "profileName": "Anastasiia",
+      "remindersEnabled": true,
+      "defaultReminder": "In einem Monat",
+      "autoplaySoundscape": false,
+      "compactTimeline": false,
+      "language": "Deutsch"
+    }
+  ]
+}
